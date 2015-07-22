@@ -1,0 +1,39 @@
+{
+	"ImportPath": "github.com/robskillington/gokit-gorilla-mux-starter",
+	"GoVersion": "go1.4.2",
+	"Deps": [
+		{
+			"ImportPath": "github.com/go-kit/kit/log",
+			"Rev": "8edd3863b69396393229123872ca138f37d14c17"
+		},
+		{
+			"ImportPath": "github.com/go-kit/kit/metrics",
+			"Rev": "8edd3863b69396393229123872ca138f37d14c17"
+		},
+		{
+			"ImportPath": "github.com/gorilla/context",
+			"Rev": "215affda49addc4c8ef7e2534915df2c8c35c6cd"
+		},
+		{
+			"ImportPath": "github.com/gorilla/mux",
+			"Rev": "ba336c9cfb43552c90de6cb2ceedd3271c747558"
+		},
+		{
+			"ImportPath": "github.com/nu7hatch/gouuid",
+			"Rev": "179d4d0c4d8d407a32af483c2354df1d2c91e6c3"
+		},
+		{
+			"ImportPath": "golang.org/x/net/context",
+			"Rev": "f0cf018861e2b54077eced91659e255072b5f215"
+		},
+		{
+			"ImportPath": "gopkg.in/logfmt.v0",
+			"Rev": "c50dc9aa845e681529d8e49d3dc11ec0195aacac"
+		},
+		{
+			"ImportPath": "gopkg.in/stack.v1",
+			"Comment": "v1.1",
+			"Rev": "3311a467df6af5844aa1b9d748e4d004b109b984"
+		}
+	]
+}
