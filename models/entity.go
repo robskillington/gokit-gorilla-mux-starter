@@ -6,6 +6,7 @@ import (
 
 type Entity struct {
 	UUID *uuid.UUID
+	Name string
 }
 
 func NewEntity() (*Entity, error) {

@@ -27,6 +27,12 @@ import (
 
 type callback func() (interface{}, error)
 
+type instrumentation struct {
+	logger   kitlog.Logger
+	total    metrics.Counter
+	duration metrics.TimeHistogram
+}
+
 func main() {
 	// Flag domain
 	fs := flag.NewFlagSet("", flag.ExitOnError)
@@ -45,12 +51,14 @@ func main() {
 	stdlog.SetFlags(0)                                // flags are handled in our logger
 
 	// `package metrics` domain
-	requests := metrics.NewMultiCounter(
+	total := metrics.NewMultiCounter(
 		statsd.NewCounter(ioutil.Discard, "requests_total", time.Second),
 	)
 	duration := metrics.NewTimeHistogram(time.Nanosecond, metrics.NewMultiHistogram(
 		statsd.NewHistogram(ioutil.Discard, "duration_nanoseconds_total", time.Second),
 	))
+
+	instruments := instrumentation{logger: logger, total: total, duration: duration}
 
 	// Dependencies and services
 	dependencies := &deps.All{
@@ -59,8 +67,6 @@ func main() {
 
 	// RPCs
 	var createEntity rpc.CreateEntity = rpc.NewCreateEntity(dependencies)
-	createEntity = logging(logger)(createEntity)
-	createEntity = instrument(requests, duration)(createEntity)
 
 	// Mechanical stuff
 	rand.Seed(time.Now().UnixNano())
@@ -79,11 +85,9 @@ func main() {
 		router := mux.NewRouter()
 
 		router.HandleFunc("/entity", func(w http.ResponseWriter, r *http.Request) {
-			// vars := mux.Vars(r)
-
-			var request rpc.CreateEntityRequest
-			httpJsonBodyEndpoint(w, r, request, func() (interface{}, error) {
-				return createEntity(ctx, &request)
+			var incoming rpc.CreateEntityRequest
+			httpJsonBodyEndpoint(w, r, &incoming, &instruments, func() (interface{}, error) {
+				return createEntity(ctx, &incoming)
 			})
 		}).Methods("POST")
 

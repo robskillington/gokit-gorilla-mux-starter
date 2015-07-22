@@ -8,23 +8,25 @@ import (
 )
 
 type CreateEntityRequest struct {
-	UUID string `json:"uuid"`
+	Name string `json:"name"`
 }
 
 type CreateEntityResponse struct {
 	UUID string `json:"uuid"`
+	Name string `json:"name"`
 }
 
 type CreateEntity func(context.Context, *CreateEntityRequest) (*CreateEntityResponse, error)
 
 func NewCreateEntity(injected *deps.All) CreateEntity {
 	return func(ctx context.Context, req *CreateEntityRequest) (*CreateEntityResponse, error) {
-		var action *models.Entity
+		var entity *models.Entity
 		var err error
-		if action, err = models.NewEntity(); err != nil {
+		if entity, err = models.NewEntity(); err != nil {
 			return nil, err
 		}
-		injected.EntityService.Save(action)
-		return &CreateEntityResponse{UUID: action.UUID.String()}, nil
+		entity.Name = req.Name
+		injected.EntityService.Save(entity)
+		return &CreateEntityResponse{UUID: entity.UUID.String(), Name: entity.Name}, nil
 	}
 }
